@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Works</h1>
+<ul>
+    {% for work in works %}
+        <li>
+            <h2>{{ work.title }}</h2>
+            <p>{{ work.description }}</p>
+            {% if work.image %}
+                <img src="{{ work.image.url }}" alt="{{ work.title }}">
+            {% endif %}
+            {% if work.video %}
+                <video controls>
+                    <source src="{{ work.video.url }}">
+                </video>
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}
