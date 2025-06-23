@@ -238,7 +238,3 @@ function convertChannel(channel: number): number {
     ? channel / 12.92
     : Math.pow((channel + 0.055) / 1.055, 2.4);
 }
-
-function checkColorContrast(node: figma.SceneNode, issues: Issue[]): void {
-  // ... existing code ...
-}

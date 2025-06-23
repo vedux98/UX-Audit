@@ -1,6 +1,6 @@
 {
   "name": "UX Audit",
-  "id": "1234567890123456789",
+  "id": "1518906978862802155",
   "api": "1.0.0",
   "main": "code.js",
   "capabilities": [],
@@ -9,6 +9,7 @@
     "figma"
   ],
   "ui": "ui.html",
+  "documentAccess": "dynamic-page",
   "networkAccess": {
     "allowedDomains": [
       "https://www.googleapis.com"
