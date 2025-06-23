@@ -1,0 +1,16 @@
+{
+  "builds": [
+    {
+      "src": "api/audit.ts",
+      "use": "@vercel/node"
+    }
+  ],
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/(.*)" }
+  ],
+  "build": {
+    "env": {
+      "ENABLE_VERCEL_BUILD": "false"
+    }
+  }
+} 
