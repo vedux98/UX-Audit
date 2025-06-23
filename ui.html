@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>UX Audit</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 10px;
+            background-color: #f8f8f8;
+            color: #333;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        button {
+            background-color: #0d99ff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #007acc;
+        }
+
+        input[type="text"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        hr {
+            border: 0;
+            height: 1px;
+            background: #ddd;
+            margin: 20px 0;
+        }
+
+        #results {
+            background-color: white;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #eee;
+            min-height: 50px;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
+
+        .tab-button {
+            background-color: #f1f1f1;
+            border: 1px solid #ccc;
+            border-bottom: none;
+            cursor: pointer;
+            padding: 10px 15px;
+            margin-right: 5px;
+            border-radius: 5px 5px 0 0;
+            color: black;
+        }
+
+        .tab-button.active {
+            background-color: #0d99ff;
+            color: white;
+            border-color: #0d99ff;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .container {
+            padding: 16px;
+            max-width: 320px;
+        }
+
+        h1 {
+            font-size: 16px;
+            margin: 0 0 16px 0;
+        }
+
+        .card {
+            background-color: #F9F9F9;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #EEEEEE;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+        }
+
+        .button.secondary {
+            background-color: #EEEEEE;
+            color: #333333;
+        }
+
+        .select-field {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #EEEEEE;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            background-color: white;
+        }
+
+        .switch {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .switch-label {
+            flex: 1;
+        }
+
+        .switch-toggle {
+            position: relative;
+            display: inline-block;
+            width: 36px;
+            height: 20px;
+        }
+
+        .switch-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #EEEEEE;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #18A0FB;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(16px);
+        }
+
+        .section {
+            margin-bottom: 24px;
+        }
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #EEEEEE;
+        }
+
+        .result {
+            margin-top: 16px;
+        }
+
+        .panel {
+            display: none;
+        }
+
+        .panel.active {
+            display: block;
+        }
+
+        .button {
+            background-color: #18A0FB;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .button:hover {
+            background-color: #0D8DE3;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <button id="tab-frame" class="active">Frame Audit</button>
+        <button id="tab-website">Website Audit</button>
+        <button id="tab-settings">Settings</button>
+    </nav>
+
+    <div id="panel-frame" class="panel active">
+        <h2>Figma Frame Audit</h2>
+        <p>Select a frame in your Figma file and click the button below to start the audit.</p>
+        <button id="audit-frame-button" class="button">Audit Selected Frame</button>
+        <div id="frame-audit-result" class="result"></div>
+    </div>
+
+    <div id="panel-website" class="panel">
+        <h2>Live Website Audit</h2>
+        <p>Enter a URL to perform a basic accessibility and UX audit.</p>
+        <p style="font-size: 12px; color: #666;">Note: This is a basic check. For detailed analysis, you can add your own Google PageSpeed API key in the future.</p>
+        <input type="text" id="website-url" class="input-field" placeholder="https://example.com">
+        <button id="audit-website-button" class="button">Audit Website</button>
+        <div id="website-audit-result" class="result"></div>
+    </div>
+
+    <div id="panel-settings" class="panel">
+        <h2>Plugin Settings</h2>
+        
+        <div class="section">
+            <h3>Audit Options</h3>
+            
+            <div class="switch">
+                <label class="switch-label">Accessibility Checks</label>
+                <label class="switch-toggle">
+                    <input type="checkbox" id="accessibility-checks" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="switch">
+                <label class="switch-label">Heuristic Evaluation</label>
+                <label class="switch-toggle">
+                    <input type="checkbox" id="heuristic-checks" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="switch">
+                <label class="switch-label">SEO Checks</label>
+                <label class="switch-toggle">
+                    <input type="checkbox" id="seo-checks" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="switch">
+                <label class="switch-label">Performance Checks</label>
+                <label class="switch-toggle">
+                    <input type="checkbox" id="performance-checks" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h3>API Configuration</h3>
+            <p style="font-size: 12px; color: #666;">Optional: Add your Google PageSpeed API key for detailed website audits</p>
+            <input type="password" id="api-key-input" class="input-field" placeholder="Enter your Google PageSpeed API key">
+            <button id="save-settings-button" class="button">Save Settings</button>
+            <div id="settings-message" style="margin-top: 8px; font-size: 12px; color: #18A0FB;"></div>
+        </div>
+        
+        <div class="section">
+            <h3>Export Options</h3>
+            <select id="export-format" class="select-field">
+                <option value="markdown">Markdown</option>
+                <option value="html">HTML</option>
+                <option value="pdf">PDF</option>
+            </select>
+            
+            <div class="switch">
+                <label class="switch-label">Include Screenshots</label>
+                <label class="switch-toggle">
+                    <input type="checkbox" id="include-screenshots">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="switch">
+                <label class="switch-label">Include Remediation Suggestions</label>
+                <label class="switch-toggle">
+                    <input type="checkbox" id="include-remediation" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const tabFrame = document.getElementById('tab-frame');
+        const tabWebsite = document.getElementById('tab-website');
+        const tabSettings = document.getElementById('tab-settings');
+
+        const panelFrame = document.getElementById('panel-frame');
+        const panelWebsite = document.getElementById('panel-website');
+        const panelSettings = document.getElementById('panel-settings');
+
+        function showPanel(panelToShow) {
+            [panelFrame, panelWebsite, panelSettings].forEach(p => p.classList.remove('active'));
+            panelToShow.classList.add('active');
+
+            [tabFrame, tabWebsite, tabSettings].forEach(t => t.classList.remove('active'));
+            if (panelToShow === panelFrame) {
+                tabFrame.classList.add('active');
+            } else if (panelToShow === panelWebsite) {
+                tabWebsite.classList.add('active');
+            } else if (panelToShow === panelSettings) {
+                tabSettings.classList.add('active');
+            }
+        }
+
+        tabFrame.onclick = () => showPanel(panelFrame);
+        tabWebsite.onclick = () => showPanel(panelWebsite);
+        tabSettings.onclick = () => showPanel(panelSettings);
+
+        // Load settings when plugin starts
+        parent.postMessage({ pluginMessage: { type: 'load-settings' } }, '*');
+
+        document.getElementById('audit-frame-button').onclick = () => {
+            parent.postMessage({ pluginMessage: { type: 'audit-frame' } }, '*');
+        };
+
+        document.getElementById('audit-website-button').onclick = () => {
+            const url = document.getElementById('website-url').value;
+            if (url) {
+                parent.postMessage({ pluginMessage: { type: 'audit-website', url: url } }, '*');
+            } else {
+                alert('Please enter a URL.');
+            }
+        };
+
+        document.getElementById('save-settings-button').onclick = () => {
+            const apiKey = document.getElementById('api-key-input').value;
+            parent.postMessage({ pluginMessage: { type: 'save-settings', apiKey: apiKey } }, '*');
+        };
+
+        window.onmessage = (event) => {
+            const msg = event.data.pluginMessage;
+            if (!msg) return;
+
+            if (msg.type === 'audit-result' && msg.result.type === 'frame') {
+                const resultsDiv = document.getElementById('frame-audit-result');
+                resultsDiv.innerHTML = `
+                    <div class="card">
+                        <h4>Frame Audit Results:</h4>
+                        <p><strong>Texts Found:</strong> ${msg.result.texts.join(', ') || 'None'}</p>
+                        <p><strong>Font Sizes:</strong> ${msg.result.fontSizes.join(', ') || 'None'}</p>
+                        <p><strong>Heuristics:</strong> ${msg.result.heuristicEvaluation}</p>
+                        <p><strong>Accessibility:</strong> ${msg.result.accessibility}</p>
+                    </div>
+                `;
+            }
+
+            if (msg.type === 'audit-result' && msg.result.type === 'website') {
+                const resultsDiv = document.getElementById('website-audit-result');
+                resultsDiv.innerHTML = `
+                    <div class="card">
+                        <h4>Website Audit Results:</h4>
+                        <p><strong>SEO:</strong> ${msg.result.seo}</p>
+                        <p><strong>Accessibility:</strong> ${msg.result.accessibility}</p>
+                    </div>
+                `;
+            }
+
+            if (msg.type === 'settings-message') {
+                const settingsMessage = document.getElementById('settings-message');
+                settingsMessage.textContent = msg.message;
+                setTimeout(() => {
+                    settingsMessage.textContent = '';
+                }, 3000);
+            }
+
+            if (msg.type === 'settings-loaded') {
+                // Populate form fields with loaded settings
+                const settings = msg.settings;
+                document.getElementById('api-key-input').value = settings.lighthouseApiKey || '';
+                document.getElementById('accessibility-checks').checked = settings.accessibilityChecks;
+                document.getElementById('heuristic-checks').checked = settings.heuristicChecks;
+                document.getElementById('seo-checks').checked = settings.seoChecks;
+                document.getElementById('performance-checks').checked = settings.performanceChecks;
+                document.getElementById('export-format').value = settings.exportFormat;
+                document.getElementById('include-screenshots').checked = settings.includeScreenshots;
+                document.getElementById('include-remediation').checked = settings.includeRemediation;
+            }
+        };
+    </script>
+</body>
+</html>
